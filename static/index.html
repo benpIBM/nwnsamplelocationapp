@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Reverse Logisitics Application</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <!-- Include PouchDB-->
+    <script src="//cdn.jsdelivr.net/pouchdb/3.5.0/pouchdb.min.js"></script>
+
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+
+    <!-- Include Leaflet CSS -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+
+    <script src="build/react.js"></script>
+    <script src="build/JSXTransformer.js"></script>
+    <script type="text/jsx">
+    /** @jsx React.DOM */
+
+    var db = new PouchDB('bbload'),
+    remote = 'https://bsp:demoPass@bsp.cloudant.com/bbload',
+    opts = {
+      continuous: true
+    };
+	db.replicate.to(remote, opts);
+	db.replicate.from(remote, opts);
+
+	var leftViewImage = '';
+	var JSONdoc ='';
+
+	var BuildMap = React.createClass({
+
+	  dbGet: function(){
+			db.get(this.state.value).then(function (doc) {
+	  			// handle doc
+	  			JSONdoc = doc
+	  			React.render(<ProductFind doc={JSONdoc}/>, document.getElementById('mount-point')); 
+			}).catch(function (err) {
+				React.render(<NoProductFind />, document.getElementById('mount-point'));
+	  			console.log(err);
+			})
+		},
+
+  	  componentDidMount: function() {
+  	  	var map = L.map('map').setView([37.7889, -122.4002], 16);
+  	  	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    		maxZoom: 18,
+    		id: 'benperlmutter.ff237855',
+    		accessToken: 'pk.eyJ1IjoiYmVucGVybG11dHRlciIsImEiOiI2Mjc5ZDlhN2MxMWM1ZjM2YmQzMzNiMzA0MmJiYmVmNyJ9.PYFo8l3wRlCIVlUiMjW1Bw'
+		}).addTo(map);
+  	  	var marker = L.marker([37.7889, -122.4002]).bindPopup("one").addTo(map);
+  	  },
+
+	  render: function(){
+	  	var mapStyle = {
+	  		height: '500px'
+	  	};
+	  	
+	    return (
+	      <div className="my-component" >
+	        <img src="images/nwnatural_logo.jpg" max-width="50%" max-height="50%"></img>
+	      	<h2>Service Locations</h2>
+	      	<div id="map" style={mapStyle}></div>
+	      </div>
+	    );
+	  }
+	});
+
+	React.render(<BuildMap/>, document.getElementById('mount-point'));
+    </script>
+
+  </head>
+
+  <body>
+    
+    <div id='mount-point' align="center">
+    <p>hiworld</p>
+    <script type="text/jsx">
+      // React Code Goes Here
+    </script>
+    </div>
+  </body>
+
+</html>
