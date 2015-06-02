@@ -30,8 +30,6 @@
     <script type="text/jsx">
     /** @jsx React.DOM */
 
-    /** @jsx React.DOM */
-
     var db = new PouchDB('env_hazmat_wgs84'),
     remote = 'https://bsp:demoPass@bsp.cloudant.com/env_hazmat_wgs84',
     opts = {
@@ -60,6 +58,7 @@
   					var lon = result.rows[iter]["doc"]["geometry"]["coordinates"][0];
   					var lat = result.rows[iter]["doc"]["geometry"]["coordinates"][1];
   					var locationString = FACILITY_N+" - "+ADDRESS+", "+CITY_NAME+", "+State+" - "+lat+", "+lon;
+  					locationString += '<br /><input type="text" placeholder="Comment" value={value}></input><br /><button type="button" className="btn btn-success" onClick=alertThis()>Submit</button>';
   					markerPoints[iter] = [locationString, lat, lon];
   					// console.log(markerPoints[iter][1]);
   					// console.log(markerPoints[iter][2]);
@@ -69,6 +68,10 @@
 			}).catch(function (err) {
   				console.log(err);
 			});
+		},
+
+		runAlert: function() {
+			alert("button has been pressed!");
 		},
 
 
@@ -129,6 +132,10 @@
 
 
   });
+
+	function alertThis() {
+		alert("this is the alert!!!");
+	}
 
 
 	React.render(<BuildMap/>, document.getElementById('mount-point'));

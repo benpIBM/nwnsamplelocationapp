@@ -2,6 +2,6 @@
     "enable_cors": true,
     "allow_credentials": true,
     "origins": [
-         "http://nwnsamplelocationapp.mybluemix.net/"
+         "http://nwnsamplelocationapp.mybluemix.net"
      ]
 }
