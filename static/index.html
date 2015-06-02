@@ -2,7 +2,7 @@
 <html>
 
   <head>
-    <title>Reverse Logisitics Application</title>
+    <title>Service Locations</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -57,9 +57,15 @@
   					var State = result.rows[iter]["doc"]["properties"]["State"];
   					var lon = result.rows[iter]["doc"]["geometry"]["coordinates"][0];
   					var lat = result.rows[iter]["doc"]["geometry"]["coordinates"][1];
+  					var doc_id = result.rows[iter]["id"];
+  					if (result.rows[iter]["doc"].hasOwnProperty("comment")) {
+  						var doc_comment = result.rows[iter]["doc"]["comment"];
+  					} else {
+  						var doc_comment = "None";
+  					}
   					var locationString = FACILITY_N+" - "+ADDRESS+", "+CITY_NAME+", "+State+" - "+lat+", "+lon;
-  					locationString += '<br /><input type="text" placeholder="Comment" value={value}></input><br /><button type="button" className="btn btn-success" onClick=alertThis()>Submit</button>';
-  					markerPoints[iter] = [locationString, lat, lon];
+  					locationString += '<div align="center"><p>Current Status: '+doc_comment+'</p><br /><input id="commentText" type="text" placeholder="Comment"></input><br /><button type="button" className="btn btn-success" onClick=commentSubmit('+iter+')>Submit</button></div>';
+  					markerPoints[iter] = [locationString, lat, lon, doc_id, FACILITY_N, ADDRESS, CITY_NAME, State, doc_comment];
   					// console.log(markerPoints[iter][1]);
   					// console.log(markerPoints[iter][2]);
   					// console.log(markerPoints[iter][0]);
@@ -69,11 +75,6 @@
   				console.log(err);
 			});
 		},
-
-		runAlert: function() {
-			alert("button has been pressed!");
-		},
-
 
   	  componentWillMount: function() {
         this.dbGet();
@@ -111,7 +112,6 @@
           marker = new L.marker([markerPoints[i][1],markerPoints[i][2]])
           .bindPopup(markerPoints[i][0])
           .addTo(map);
-        console.log('marker here +1111 added '+markerPoints[i][1]);
       }
     },
 
@@ -133,8 +133,32 @@
 
   });
 
-	function alertThis() {
-		alert("this is the alert!!!");
+	function commentSubmit(ind) {
+		db.put({
+		  _id: markerPoints[ind][3]+'_1',
+		  type: "Feature",
+		  properties: {
+		  	FACILITY_N: markerPoints[ind][4],
+		  	ADDRESS: markerPoints[ind][5],
+		  	CITY_NAME: markerPoints[ind][6],
+		  	State: markerPoints[ind][7]
+		  },
+		  geometry: {
+		  	type: "Point",
+		  	coordinates: [
+		  	markerPoints[ind][2],
+		  	markerPoints[ind][1]
+		  	]
+		  },
+		  comment: document.getElementById("commentText").value,
+		  annotation: true
+		}).then(function (response) {
+		  // handle response
+		  window.location.reload();
+		  console.log(markerPoints[ind][3]+'_1')
+		}).catch(function (err) {
+		  console.log(err);
+		});
 	}
 
 
