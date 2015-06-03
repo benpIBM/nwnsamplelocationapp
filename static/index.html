@@ -38,6 +38,13 @@
 	db.replicate.to(remote, opts);
 	db.replicate.from(remote, opts);
 
+	var xmlhttp;
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	}
+	
+	
 	var leftViewImage = '';
 	var JSONdoc ='';
 	var markerPoints = [["one", 37.7889, -122.4002], ["two", 37.7, -122.3], ["three", 37.6, -122.5]];
@@ -172,13 +179,21 @@
 	    } else {
 	        x.innerHTML = "Geolocation is not supported by this browser.";
 	    }
-	}
+	};
 	function showPosition(position) {
 	    x.innerHTML = "Latitude: " + position.coords.latitude +
 	    "<br>Longitude: " + position.coords.longitude;
-	    myLocation = [position.coords.latitude, position.coords.longitude]
+	    myLocation = [position.coords.latitude, position.coords.longitude];
+	    console.log('my new location: '+myLocation);
+	    xmlhttp.open("GET","https://nwntest:1England@nwntest.cloudant.com/env_hazmat_wgs84/_design/SpatialView/_geo/spatial?lon=-122.3249172489999&lat=45.55996990500006&relation=contains&include_docs=true&radius=1000",true);
+		xmlhttp.send();
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+				alert(xmlhttp.responseText);
+			}
+		};
 	    React.render(<BuildPoints/>, document.getElementById('mount-point'));
-	}
+	};
 
 
 	React.render(<BuildMap/>, document.getElementById('mount-point'));
