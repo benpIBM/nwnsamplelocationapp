@@ -7,8 +7,8 @@ var fs = require('fs');
 
 //var cUser = "971a887f-e7fb-4446-8c88-42735c35ea44-bluemix";
 //var cPass = "290f09ee5a20d19464e5443f4cb4bd5846e4e2fe0cf682f4a5914ed0a9b1721c";
-var cUser = 'bsp';
-var cPass = 'demoPass';
+var cUser = 'nwntest';
+var cPass = '1England';
 //var cUser = 'e7a08a8a-a7a3-4bc0-94a5-ba012e29dbf2-bluemix'
 //var cPass = 'f6973f1c4ae49c4d69738219a883e9de82c07e7338ea7b8092ea6b814e6a5cc5'
 var dbTest = "env_hazmat_wgs84";

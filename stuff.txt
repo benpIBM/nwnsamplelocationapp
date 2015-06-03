@@ -132,3 +132,8 @@ Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remot
 9999240800050000
 9999240800050002
 9999240800050004
+
+
+
+-122.3249172489999
+45.55996990500006
