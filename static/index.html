@@ -52,37 +52,61 @@
 
 	var BuildMap = React.createClass({
 
-	  dbGet: function(){
-			db.allDocs({
-  				include_docs: true,
-  				limit: 100
-			}).then(function (result) {
-  				// handle result
-  				for (var iter = 0; iter < result.rows.length; iter++) {
-  					var FACILITY_N = result.rows[iter]["doc"]["properties"]["FACILITY_N"];
-  					var ADDRESS = result.rows[iter]["doc"]["properties"]["ADDRESS"];
-  					var CITY_NAME = result.rows[iter]["doc"]["properties"]["CITY_NAME"];
-  					var State = result.rows[iter]["doc"]["properties"]["State"];
-  					var lon = result.rows[iter]["doc"]["geometry"]["coordinates"][0];
-  					var lat = result.rows[iter]["doc"]["geometry"]["coordinates"][1];
-  					var doc_id = result.rows[iter]["id"];
-  					if (result.rows[iter]["doc"].hasOwnProperty("comment")) {
-  						var doc_comment = result.rows[iter]["doc"]["comment"];
-  					} else {
-  						var doc_comment = "None";
-  					}
-  					var locationString = FACILITY_N+" - "+ADDRESS+", "+CITY_NAME+", "+State+" - "+lat+", "+lon;
-  					locationString += '<div align="center"><p>Current Status: '+doc_comment+'</p><br /><input id="commentText" type="text" placeholder="Comment"></input><br /><button type="button" className="btn btn-success" onClick=commentSubmit('+iter+')>Submit</button></div>';
-  					markerPoints[iter] = [locationString, lat, lon, doc_id, FACILITY_N, ADDRESS, CITY_NAME, State, doc_comment];
-  					// console.log(markerPoints[iter][1]);
-  					// console.log(markerPoints[iter][2]);
-  					// console.log(markerPoints[iter][0]);
-  				}
-          React.render(<BuildPoints/>, document.getElementById('mount-point'));
-			}).catch(function (err) {
-  				console.log(err);
-			});
+		getLocation: function() {
+			var x = document.getElementById("demo");
+		    if (navigator.geolocation) {
+		        navigator.geolocation.getCurrentPosition(showPosition);
+		    } else {
+		        x.innerHTML = "Geolocation is not supported by this browser.";
+		    }
+			function showPosition(position) {
+			    x.innerHTML = "Latitude: " + position.coords.latitude +
+			    "<br>Longitude: " + position.coords.longitude;
+			    myLocation = [position.coords.latitude, position.coords.longitude];
+			    console.log('my new location: '+myLocation);
+			    xmlhttp.open("GET","https://nwntest:1England@nwntest.cloudant.com/env_hazmat_wgs84/_design/SpatialView/_geo/spatial?lon="+position.coords.longitude+"&lat="+position.coords.latitude+"&relation=contains&include_docs=true&radius=10000",true);
+				xmlhttp.send();
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+						//console.log(xmlhttp.responseText);
+						var result = JSON.parse(xmlhttp.responseText);
+						console.log(result["rows"]);
+						for (var iter = 0; iter < result.rows.length; iter++) {
+	  					var FACILITY_N = result.rows[iter]["doc"]["properties"]["FACILITY_N"];
+	  					var ADDRESS = result.rows[iter]["doc"]["properties"]["ADDRESS"];
+	  					var CITY_NAME = result.rows[iter]["doc"]["properties"]["CITY_NAME"];
+	  					var State = result.rows[iter]["doc"]["properties"]["State"];
+	  					var lon = result.rows[iter]["doc"]["geometry"]["coordinates"][0];
+	  					var lat = result.rows[iter]["doc"]["geometry"]["coordinates"][1];
+	  					var doc_id = result.rows[iter]["id"];
+	  					if (result.rows[iter]["doc"].hasOwnProperty("comment")) {
+	  						var doc_comment = result.rows[iter]["doc"]["comment"];
+	  					} else {
+	  						var doc_comment = "None";
+	  					}
+	  					var locationString = FACILITY_N+" - "+ADDRESS+", "+CITY_NAME+", "+State+" - "+lat+", "+lon;
+	  					locationString += '<div align="center"><p>Current Status: '+doc_comment+'</p><br /><input id="commentText" type="text" placeholder="Comment"></input><br /><button type="button" className="btn btn-success" onClick=commentSubmit('+iter+')>Submit</button></div>';
+	  					markerPoints[iter] = [locationString, lat, lon, doc_id, FACILITY_N, ADDRESS, CITY_NAME, State, doc_comment];
+	  					// console.log(markerPoints[iter][1]);
+	  					// console.log(markerPoints[iter][2]);
+	  					// console.log(markerPoints[iter][0]);
+	  				}
+	  				React.render(<BuildPoints/>, document.getElementById('mount-point'));
+	  			}
+				};
+			    
+			};
 		},
+
+
+
+	  dbGet: function(){
+
+  		console.log('here');
+		this.getLocation();
+		console.log('after GetLocation');
+		
+	},
 
   	  componentWillMount: function() {
         this.dbGet();
@@ -93,8 +117,6 @@
 	  	var mapStyle = {
 	  		height: '500px'
 	  	};
-
-	  	getLocation();
 	  	
 	    return (
 	      <div className="my-component" >
@@ -172,28 +194,7 @@
 		});
 	};
 
-	var x = document.getElementById("demo");
-	function getLocation() {
-	    if (navigator.geolocation) {
-	        navigator.geolocation.getCurrentPosition(showPosition);
-	    } else {
-	        x.innerHTML = "Geolocation is not supported by this browser.";
-	    }
-	};
-	function showPosition(position) {
-	    x.innerHTML = "Latitude: " + position.coords.latitude +
-	    "<br>Longitude: " + position.coords.longitude;
-	    myLocation = [position.coords.latitude, position.coords.longitude];
-	    console.log('my new location: '+myLocation);
-	    xmlhttp.open("GET","https://nwntest:1England@nwntest.cloudant.com/env_hazmat_wgs84/_design/SpatialView/_geo/spatial?lon=-122.3249172489999&lat=45.55996990500006&relation=contains&include_docs=true&radius=1000",true);
-		xmlhttp.send();
-		xmlhttp.onreadystatechange = function() {
-			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-				alert(xmlhttp.responseText);
-			}
-		};
-	    React.render(<BuildPoints/>, document.getElementById('mount-point'));
-	};
+	
 
 
 	React.render(<BuildMap/>, document.getElementById('mount-point'));
