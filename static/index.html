@@ -41,6 +41,7 @@
 	var leftViewImage = '';
 	var JSONdoc ='';
 	var markerPoints = [["one", 37.7889, -122.4002], ["two", 37.7, -122.3], ["three", 37.6, -122.5]];
+	var myLocation = [45.577718986000036, -122.3535780769999];
 
 	var BuildMap = React.createClass({
 
@@ -85,6 +86,8 @@
 	  	var mapStyle = {
 	  		height: '500px'
 	  	};
+
+	  	getLocation();
 	  	
 	    return (
 	      <div className="my-component" >
@@ -99,7 +102,8 @@
   var BuildPoints = React.createClass({
 
     componentDidMount: function() {
-        var map = L.map('map').setView([45.577718986000036, -122.3535780769999], 15);
+        var map = L.map('map').setView(myLocation, 15);
+        console.log(myLocation);
         var marker;
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -159,6 +163,21 @@
 		}).catch(function (err) {
 		  console.log(err);
 		});
+	};
+
+	var x = document.getElementById("demo");
+	function getLocation() {
+	    if (navigator.geolocation) {
+	        navigator.geolocation.getCurrentPosition(showPosition);
+	    } else {
+	        x.innerHTML = "Geolocation is not supported by this browser.";
+	    }
+	}
+	function showPosition(position) {
+	    x.innerHTML = "Latitude: " + position.coords.latitude +
+	    "<br>Longitude: " + position.coords.longitude;
+	    myLocation = [position.coords.latitude, position.coords.longitude]
+	    React.render(<BuildPoints/>, document.getElementById('mount-point'));
 	}
 
 
@@ -169,7 +188,7 @@
   </head>
 
   <body>
-    
+    <div id="demo"></div>
     <div id='mount-point' align="center">
     <p>hiworld</p>
     <script type="text/jsx">
