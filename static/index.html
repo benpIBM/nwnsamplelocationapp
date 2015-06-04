@@ -167,7 +167,7 @@
   });
 
 	function commentSubmit(ind) {
-		db.put({
+		var putDoc = {
 		  _id: markerPoints[ind][3]+'_1',
 		  type: "Feature",
 		  properties: {
@@ -185,13 +185,31 @@
 		  },
 		  comment: document.getElementById("commentText").value,
 		  annotation: true
-		}).then(function (response) {
-		  // handle response
-		  window.location.reload();
-		  console.log(markerPoints[ind][3]+'_1')
-		}).catch(function (err) {
-		  console.log(err);
-		});
+		};
+
+		xmlhttpPOST=new XMLHttpRequest();
+		xmlhttpPOST.open("POST","https://nwntest:1England@nwntest.cloudant.com/env_hazmat_wgs84",true);
+		xmlhttpPOST.setRequestHeader("Content-Type", "application/json");
+		// delete putDoc['_id'];
+		console.log("'"+JSON.stringify(putDoc)+"'");
+		try{
+			console.log('about to send');
+			xmlhttpPOST.send(JSON.stringify(putDoc));
+		}catch(err){
+			console.log('this is the error: '+err);
+		}
+
+		xmlhttpPOST.onload = function() {
+			console.log('on load! ---- '+xmlhttpPOST.responseText);
+		}
+		
+		xmlhttpPOST.onreadystatechange = function() {
+			window.location.reload();
+		  	console.log('we are here: '+markerPoints[ind][3]+'_1');
+		  }
+		
+
+
 	};
 
 	
