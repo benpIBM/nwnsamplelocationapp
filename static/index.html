@@ -8,25 +8,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
     <!-- Latest compiled JavaScript -->
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
     <!-- Include PouchDB-->
     <script src="//cdn.jsdelivr.net/pouchdb/3.5.0/pouchdb.min.js"></script>
 
     <!-- Include Leaflet CSS -->
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
 
     <!-- Include Leaflet CSS -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
 
     <script src="build/react.js"></script>
     <script src="build/JSXTransformer.js"></script>
+    <script src="../server.py"></script>
     <script type="text/jsx">
     /** @jsx React.DOM */
 
@@ -66,6 +67,7 @@
 			    console.log('my new location: '+myLocation);
 			    xmlhttp.open("GET","https://nwntest:1England@nwntest.cloudant.com/env_hazmat_wgs84/_design/SpatialView/_geo/spatial?lon="+position.coords.longitude+"&lat="+position.coords.latitude+"&relation=contains&include_docs=true&radius=10000",true);
 				xmlhttp.send();
+				console.log('after the send ----');
 				xmlhttp.onreadystatechange = function() {
 					if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 						//console.log(xmlhttp.responseText);
@@ -135,7 +137,7 @@
         console.log(myLocation);
         var marker;
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://mapbox.com">Mapbox</a>',
         maxZoom: 18,
         id: 'benperlmutter.ff237855',
         accessToken: 'pk.eyJ1IjoiYmVucGVybG11dHRlciIsImEiOiI2Mjc5ZDlhN2MxMWM1ZjM2YmQzMzNiMzA0MmJiYmVmNyJ9.PYFo8l3wRlCIVlUiMjW1Bw'
