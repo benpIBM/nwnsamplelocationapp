@@ -27,6 +27,7 @@
 
     <script src="build/react.js"></script>
     <script src="build/JSXTransformer.js"></script>
+
     <script src="../server.py"></script>
     <script type="text/jsx">
     /** @jsx React.DOM */
@@ -45,11 +46,8 @@
 		xmlhttp=new XMLHttpRequest();
 	}
 	
-	
-	var leftViewImage = '';
 	var JSONdoc ='';
 	var markerPoints = [["one", 37.7889, -122.4002], ["two", 37.7, -122.3], ["three", 37.6, -122.5]];
-	var myLocation = [45.577718986000036, -122.3535780769999];
 
 	var BuildMap = React.createClass({
 
@@ -67,7 +65,6 @@
 			    console.log('my new location: '+myLocation);
 			    xmlhttp.open("GET","https://nwntest:1England@nwntest.cloudant.com/env_hazmat_wgs84/_design/SpatialView/_geo/spatial?lon="+position.coords.longitude+"&lat="+position.coords.latitude+"&relation=contains&include_docs=true&radius=10000",true);
 				xmlhttp.send();
-				console.log('after the send ----');
 				xmlhttp.onreadystatechange = function() {
 					if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 						//console.log(xmlhttp.responseText);
@@ -192,6 +189,7 @@
 		xmlhttpPOST=new XMLHttpRequest();
 		xmlhttpPOST.open("POST","https://nwntest:1England@nwntest.cloudant.com/env_hazmat_wgs84",true);
 		xmlhttpPOST.setRequestHeader("Content-Type", "application/json");
+		xmlhttpPOST.setRequestHeader("Authorization", "Basic "+btoa('nwntest:1England'));
 		// delete putDoc['_id'];
 		console.log("'"+JSON.stringify(putDoc)+"'");
 		try{
